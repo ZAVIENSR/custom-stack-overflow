@@ -5,6 +5,7 @@ import {
   SignedOut,
   UserButton,
 } from "@clerk/nextjs";
+import { ThemeProvider } from "../context/ThemeProvider";
 import { Inter, Space_Grotesk } from "next/font/google";
 import type { Metadata } from "next";
 
@@ -54,7 +55,10 @@ export default function RootLayout({
               <UserButton />
             </SignedIn>
           </header>
-          <main>{children}</main>
+
+          <ThemeProvider>
+            <main>{children}</main>
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>
