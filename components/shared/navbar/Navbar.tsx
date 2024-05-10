@@ -1,8 +1,9 @@
-"use client";
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { SignedIn, UserButton } from "@clerk/nextjs";
+import MobileNav from "@/components/shared/navbar/MobileNav";
+import Theme from "@/components/shared/navbar/Theme";
 
 const Navbar = () => {
   return (
@@ -19,7 +20,7 @@ const Navbar = () => {
         </p>
       </Link>
       <div className="flex-between gap-5">
-        Theme{" "}
+        <Theme />
         <SignedIn>
           <UserButton
             afterSignOutUrl="/"
@@ -33,6 +34,8 @@ const Navbar = () => {
             }}
           ></UserButton>
         </SignedIn>
+
+        <MobileNav />
       </div>
     </div>
   );
