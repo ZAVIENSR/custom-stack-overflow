@@ -8,6 +8,8 @@ import { z } from "zod";
 
 import Image from "next/image";
 
+import { useRouter, usePathname } from "next/navigation";
+
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -25,9 +27,16 @@ import { createQuestion } from "@/lib/actions/question.action";
 
 const type: any = "create";
 
-export default function Question() {
+interface Props {
+  mongoUserId: string;
+}
+
+export default function Question({ mongoUserId }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const editorRef = useRef(null);
+  const router = useRouter();
+  const pathname = usePathname();
+  // const pathname = usePathname();
   // 1. Define your form.
   const form = useForm<z.infer<typeof QuestionsSchema>>({
     resolver: zodResolver(QuestionsSchema),
@@ -47,7 +56,16 @@ export default function Question() {
       // contain all form data
       // navigate to home page
 
-      await createQuestion({});
+      await createQuestion({
+        title: values.title,
+        content: values.explanation,
+        tags: values.tags,
+        author: JSON.parse(mongoUserId),
+        path: pathname,
+      });
+
+      // navigate to home page
+      router.push("/");
     } catch (error) {
     } finally {
       setIsSubmitting(false);

@@ -8,39 +8,12 @@ import { HomePageFilters } from "@/constants/filters";
 import HomeFilters from "@/components/home/HomeFilters";
 import NoResult from "@/components/NoResult";
 import QuestionCard from "@/components/cards/QuestionCard";
+import { getQuestions } from "@/lib/actions/question.action";
 
-const questions = [
-  {
-    _id: "1",
-    title: "Cascading Deletes in SQLAlchemy?",
-    tags: [
-      { _id: "1", name: "python" },
-      { _id: "2", name: "sql" },
-    ],
-    author: { _id: "1", name: "John Doe", picture: "jhon-doe.png" }, // Adjusted to match the `Author` interface
-    upvotes: 10,
-    views: 100,
-    answers: [
-      {
-        _id: "1",
-        text: "You can use the cascade option...",
-        author: { _id: 2, name: "Jane Smith" },
-        upvotes: 5,
-        createdAt: new Date("2021-09-02T12:00:00.000Z"),
-      },
-      {
-        _id: "2",
-        text: "Here is an example...",
-        author: { _id: 3, name: "Alice Johnson" },
-        upvotes: 5,
-        createdAt: new Date("2021-09-03T12:00:00.000Z"),
-      },
-    ],
-    createdAt: new Date("2021-09-01T12:00:00.000Z"),
-  },
-];
+const Home = async () => {
+  const result = await getQuestions({});
 
-const Home = () => {
+  console.log(result);
   return (
     <>
       <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
@@ -70,8 +43,8 @@ const Home = () => {
       <HomeFilters />
 
       <div className="mt-10 flex w-full flex-col gap-6">
-        {questions.length > 0 ? (
-          questions.map((question) => (
+        {result.questions.length > 0 ? (
+          result.questions.map((question) => (
             <QuestionCard
               key={question._id}
               _id={question._id}
