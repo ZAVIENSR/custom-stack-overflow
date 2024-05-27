@@ -10,7 +10,7 @@ import {
 import { revalidatePath } from "next/cache";
 import Question from "@/database/question.model";
 
-export async function getUserByID(params: GetUserByIdParams) {
+export async function getUserById(params: GetUserByIdParams) {
   try {
     connectToDatabase();
 
