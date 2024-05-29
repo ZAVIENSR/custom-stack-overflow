@@ -25,8 +25,11 @@ export async function getQuestions(params: GetQuestionsParams) {
 
 export async function createQuestion(params: CreateQuestionParams) {
   try {
+    // connect to DB
     connectToDatabase();
 
+    // Accepr some parameteres form the front end
+    // everything that we pass from our form.
     const { title, content, tags, author, path } = params;
 
     // Create the question
@@ -34,28 +37,41 @@ export async function createQuestion(params: CreateQuestionParams) {
       title,
       content,
       author,
-      path,
     });
 
     const tagDocuments = [];
+
+    /**
+     * Find an existing Tag or create a new one, and
+     * associate it with a question.
+     *
+     * This function performs a search for a Tag
+     * with the specified name, and if it doesn't exist,
+     * it creates a new Tag with that name and associates
+     * it with the provided question.
+     *
+     */
     for (const tag of tags) {
       const existingTag = await Tag.findOneAndUpdate(
-        { name: { $regex: new RegExp(`^${tag}$`, "i") } },
-        { $setOnInsert: { name: tag }, $push: { question: question._id } },
-        { upsert: true, new: true }
+        { name: { $regex: new RegExp(`^${tag}$`, "i") } }, // find something
+        {
+          $setOnInsert: { name: tag },
+          $push: { questions: question._id },
+        }, // do something on it
+        { upsert: true, new: true } // additional options
       );
 
       tagDocuments.push(existingTag._id);
     }
 
+    // Update the question
     await Question.findByIdAndUpdate(question._id, {
       $push: { tags: { $each: tagDocuments } },
     });
 
-    // Create an interaction record for the user's ask_question action
-
-    // Increment author's reputation by +5 for creating a question but we will focus on that later on.
-
     revalidatePath(path);
-  } catch (error) {}
+  } catch (error) {
+    console.error(`❌ ${error} ❌`);
+    throw error;
+  }
 }
